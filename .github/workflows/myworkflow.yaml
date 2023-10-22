@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        id: checkout4
+        id: checkout6
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
@@ -38,10 +38,9 @@ jobs:
       #     SLACK_USERNAME: rtCamp
       #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
-  post:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: MeilCli/slack-upload-file@v2
+  
+      - name: upload files
+        uses: MeilCli/slack-upload-file@v2
         with:
           slack_token: ${{ secrets.SLACK_TOKEN }}
           channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
