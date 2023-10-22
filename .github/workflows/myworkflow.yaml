@@ -1,9 +1,6 @@
 name: build
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  - push
 jobs:
   build:
     name: Build
@@ -12,7 +9,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         id: checkout
-        
+
       - name: Build an image from Dockerfile
         run: |
           docker build -t docker.io/my-organization/my-app:${{ github.sha }} .
