@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        id: checkout3
+        id: checkout4
 
       - name: Build an image from Dockerfile
         run: |
@@ -27,9 +27,13 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
-      - name: Send Slack Notification
+      - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
-        with:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          status: ${{ job.status }}
-        if: always()  # This step runs regardless of the job status
+        env:
+            SLACK_CHANNEL: general
+            SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+            SLACK_ICON: https://github.com/rtCamp.png?size=48
+            SLACK_MESSAGE: 'Post Content :rocket:'
+            SLACK_TITLE: Post Title
+            SLACK_USERNAME: rtCamp
+            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
