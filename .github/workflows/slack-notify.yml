@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        id: checkout4
+        id: checkout5
 
       - name: Build an image from Dockerfile
         run: |
