@@ -10,17 +10,53 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         id: checkout
 
       - name: Build an image from Dockerfile
         run: |
-          docker build -t docker.io/my-organization/my-app:${{ github.sha }} .
-      - name: Run Trivy vulnerability scanner
+          docker build -t docker.io/my-organization/my-app:${{ github.sha }}.
+
+      - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
-          format: 'table'
+          scan-type: 'fs'
           ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          format: 'table'
+          output: 'trivy-results.txt'
+          severity: 'CRITICAL'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+      
+      # - name: Slack Notification
+      #   uses: rtCamp/action-slack-notify@v2
+      #   env:
+      #     SLACK_CHANNEL: general
+      #     SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+      #     SLACK_ICON: https://github.com/rtCamp.png?size=48
+      #     SLACK_MESSAGE: 'Post Content :rocket:'
+      #     SLACK_TITLE: Post Title
+      #     SLACK_USERNAME: rtCamp
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: MeilCli/slack-upload-file@v3
+        with:
+          slack_token: ${{ secrets.SLACK_TOKEN }}
+          channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
+          file_path: 'trivy-results.txt'
+          file_type: 'text'
+          file_name: 'trivy-results.txt'
+          title: 'title of file'
+          initial_comment: 'post by Ashley'
+                      
+
+         
+          
+          
+              
