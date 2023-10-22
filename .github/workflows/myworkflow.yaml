@@ -20,7 +20,7 @@ jobs:
           ignore-unfixed: true
           format: 'table'
           output: 'trivy-results.txt'
-          severity: 'CRITICAL'
+          severity: 'CRITICAL,HIGH'
 
       - name: text file
         run: cat trivy-results.txt
