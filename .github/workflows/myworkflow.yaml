@@ -70,7 +70,7 @@ jobs:
           tags: ashleygu22/go-fortune:abcd
 
       - name: Sign image with a key
-        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${TAGS}@${DIGEST}"
+        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY ashleygu22/go-fortune:${{github.sha}}
         env:
           TAGS: ${{ steps.docker_meta.outputs.tags }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
