@@ -71,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ashleygu22/go-fortune:final
+          tags: ashleygu22/go-fortune:${{ github.sha }}
 
       - name: Sign image with a key
         run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY ashleygu22/go-fortune@sha256:610054bf91a6997a072887325ffe129c8711e8e00a5f9af5fb4a6a2223f6c243

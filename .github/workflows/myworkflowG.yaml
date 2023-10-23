@@ -37,9 +37,9 @@ jobs:
           SLACK_ICON: https://github.com/rtCamp.png?size=48
           SLACK_MESSAGE: |
                          Name:Gu Xinran
-                         Metriculation:A0285927L
+                         Matriculation:A0285927L
                          Email:e1221739@u.nus.edu
-                         Git:https://github.com/AshleyGu22/adlc3
+                         Git:https://github.com/${{ github.repository }}
                          Image:https://hub.docker.com/repository/docker/ashleygu22/go-fortune/general
           SLACK_TITLE: Image build and signed
           SLACK_USERNAME: GuXinran
@@ -76,7 +76,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ashleygu22/go-fortune:final
+          tags: ashleygu22/go-fortune:${{ github.sha }}
 
       - name: Sign image with a key
         run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY ashleygu22/go-fortune@sha256:610054bf91a6997a072887325ffe129c8711e8e00a5f9af5fb4a6a2223f6c243
