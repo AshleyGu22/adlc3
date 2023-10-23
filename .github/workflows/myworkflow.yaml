@@ -47,8 +47,6 @@ jobs:
       #     file_name: 'trivy-results.txt'
       #     title: 'title of file'
       #     initial_comment: 'post by Ashley'
-
-
     
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -66,7 +64,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ashley/go-fortune:abcd
+          tags: ashleygu22/go-fortune:abcd
                       
 
          
