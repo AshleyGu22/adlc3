@@ -21,9 +21,6 @@ jobs:
           format: 'table'
           output: 'trivy-results.txt'
           severity: 'HIGH'  #add HIGH to give bug to get report 
-
-      # - name: text file
-      #   run: cat trivy-results.txt  #find what in this file
       
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
