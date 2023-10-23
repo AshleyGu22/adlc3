@@ -5,8 +5,8 @@ on:
       - 'v[0-9]+.[0-9]+'
   
 jobs:
-  build:
-    name: Build
+  scan_files:
+    name: scan
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
@@ -20,33 +20,33 @@ jobs:
           ignore-unfixed: true
           format: 'table'
           output: 'trivy-results.txt'
-          severity: 'CRITICAL'  #add HIGH to give bug to get report 
+          severity: 'HIGH'  #add HIGH to give bug to get report 
 
       # - name: text file
       #   run: cat trivy-results.txt  #find what in this file
       
-      # - name: Slack Notification
-      #   uses: rtCamp/action-slack-notify@v2
-      #   env:
-      #     SLACK_CHANNEL: general
-      #     SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-      #     SLACK_ICON: https://github.com/rtCamp.png?size=48
-      #     SLACK_MESSAGE: 'Post Content :rocket:'
-      #     SLACK_TITLE: Post Title
-      #     SLACK_USERNAME: rtCamp
-      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: general
+          SLACK_COLOR: '#ff0000' 
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Failed trivy scan,see uploaded report'
+          SLACK_TITLE: Scan Failed
+          SLACK_USERNAME: GuXinran
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
   
-      # - name: upload files
-      #   uses: MeilCli/slack-upload-file@v3
-      #   with:
-      #     slack_token: ${{ secrets.SLACK_TOKEN }}
-      #     channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
-      #     file_path: 'trivy-results.txt'
-      #     file_type: 'text'
-      #     file_name: 'trivy-results.txt'
-      #     title: 'title of file'
-      #     initial_comment: 'post by Ashley'
+      - name: upload files
+        uses: MeilCli/slack-upload-file@v3
+        with:
+          slack_token: ${{ secrets.SLACK_TOKEN }}
+          channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
+          file_path: 'trivy-results.txt'
+          file_type: 'text'
+          file_name: 'trivy-results.txt'
+          title: 'title of file'
+          initial_comment: 'post by GuXinran'
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3.1.1
