@@ -1,17 +1,24 @@
-name: build
+name: build and push
 on:
   push:
     branches:
       - 'v[0-9]+.[0-9]+'
   
 jobs:
-  scan_files:
-    name: scan
+  build:
+    name: build
     runs-on: ubuntu-20.04
     steps:
+      - name: Check Commit Message
+        run: |
+            if [[ "${{ github.event.head_commit.message }}" == "#NORUN"* ]]; then
+                echo "Commit message starts with #NORUN, skipping the workflow."
+                exit 78  # Use a non-zero exit code to indicate skipping the workflow
+            fi
+
       - name: Checkout code
         uses: actions/checkout@v3
-        id: checkout2 #use for change and save
+        id: checkout #use for change and save
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
@@ -20,7 +27,7 @@ jobs:
           ignore-unfixed: true
           format: 'table'
           output: 'trivy-results.txt'
-          severity: 'HIGH'  #add HIGH to give bug to get report 
+          severity: 'CRITICAL,HIGH'  #add HIGH to give bug to get report 
       
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
@@ -64,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ashleygu22/go-fortune:abcd
+          tags: ashleygu22/go-fortune:final
 
       - name: Sign image with a key
         run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY ashleygu22/go-fortune@sha256:610054bf91a6997a072887325ffe129c8711e8e00a5f9af5fb4a6a2223f6c243

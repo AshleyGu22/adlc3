@@ -1,12 +1,12 @@
-name: build
+name: build and push
 on:
   push:
     branches:
       - 'v[0-9]+.[0-9]+'
   
 jobs:
-  build_and_push:
-    name: scan
+  build:
+    name: build
     runs-on: ubuntu-20.04
     steps:
       - name: Check Commit Message
@@ -18,7 +18,7 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v3
-        id: checkout2 #use for change and save
+        id: checkout #use for change and save
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
@@ -28,9 +28,6 @@ jobs:
           format: 'table'
           output: 'trivy-results.txt'
           severity: 'CRITICAL'  #add HIGH to give bug to get report 
-
-      # - name: text file
-      #   run: cat trivy-results.txt  #find what in this file
       
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
@@ -38,26 +35,26 @@ jobs:
           SLACK_CHANNEL: general
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
           SLACK_ICON: https://github.com/rtCamp.png?size=48
-          SLACK_MESSAGE: 'Name:Gu Xinran
-                          Metriculation:A0285927L
-                          Email:e1221739@u.nus.edu
-                          Git:https://github.com/AshleyGu22/adlc3
-                          Image:https://hub.docker.com/repository/docker/ashleygu22/go-fortune/general'
+          SLACK_MESSAGE: '*Name:*Gu Xinran /n
+                          *Metriculation:*A0285927L /n
+                          *Email:*e1221739@u.nus.edu /n
+                          *Git:*https://github.com/AshleyGu22/adlc3 /n
+                          *Image:*https://hub.docker.com/repository/docker/ashleygu22/go-fortune/general'
           SLACK_TITLE: Image build and signed
           SLACK_USERNAME: GuXinran
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
   
-    #   - name: upload files
-    #     uses: MeilCli/slack-upload-file@v3
-    #     with:
-    #       slack_token: ${{ secrets.SLACK_TOKEN }}
-    #       channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
-    #       file_path: 'trivy-results.txt'
-    #       file_type: 'text'
-    #       file_name: 'trivy-results.txt'
-    #       title: 'title of file'
-    #       initial_comment: 'post by GuXinran'
+      - name: upload files
+        uses: MeilCli/slack-upload-file@v3
+        with:
+          slack_token: ${{ secrets.SLACK_TOKEN }}
+          channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
+          file_path: 'trivy-results.txt'
+          file_type: 'text'
+          file_name: 'trivy-results.txt'
+          title: 'title of file'
+          initial_comment: 'post by GuXinran'
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3.1.1
@@ -78,7 +75,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ashleygu22/go-fortune:abcd
+          tags: ashleygu22/go-fortune:final
 
       - name: Sign image with a key
         run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY ashleygu22/go-fortune@sha256:610054bf91a6997a072887325ffe129c8711e8e00a5f9af5fb4a6a2223f6c243
